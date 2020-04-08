@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\Blog\Admin;
 
+use App\Http\Requests\BlogPostCreateRequest;
+use App\Http\Requests\BlogPostUpdateRequest;
+use App\Models\BlogCategory;
+use App\Models\BlogPost;
 use App\Repositories\BlogPostRepository;
 use App\Repositories\BlogCategoryRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
@@ -45,18 +50,41 @@ class PostController extends BaseController
      */
     public function create()
     {
-        dd(__METHOD__);
+       // dd(__METHOD__);
+        $categoryList = $this->BlogCategoryRepository->getForComboBox();
+
+        $item = new BlogPost();
+
+        return view('blog.admin.posts.edit',
+            compact('item',
+                'categoryList'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  BlogPostCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BlogPostCreateRequest $request)
     {
-        //
+        //dd($request['is_published']);
+        //dd(__METHOD__);
+        $data = $request->input();
+
+        if($data['is_published'] == 1) {
+            $data['published_at'] = Carbon::now();
+        }
+
+        $item = (new BlogPost())->create($data);
+
+        if ($item) {
+            return redirect()->route('blog.admin.post.edit', [$item->id])
+                ->with(['success' => 'успешно сохранено']);
+        } else {
+            return back()->withErrors(['msg' => 'ошибка сохранения'])
+                ->withInput();
+        }
     }
 
     /**
@@ -81,19 +109,54 @@ class PostController extends BaseController
         $categoryList = $this->BlogCategoryRepository->getForComboBox();
 
         $item = $this->blogPostRepository->getEdit($id);
-        return view('blog.admin.posts.edit', compact('item', 'categoryList'));
+        if(empty($item)){
+            abort(404);
+        }
+        return view('blog.admin.posts.edit',
+            compact('item',
+                'categoryList'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  BlogPostUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BlogPostUpdateRequest $request, $id)
     {
-        dd($request);
+        $item = $this->blogPostRepository->getEdit($id);
+        //dd($request->all());
+
+        if(empty($item)) {
+            return back()
+                ->withErrors(['msg' => "Запись id=[{$id}] не найдена"])
+                ->withInput();
+        }
+
+        $data = $request->all();
+
+//        If(empty($data['slug'])) {
+//            $data['slug'] = \Str::slug($data['title']);
+//        }
+
+//        if(empty($item->published_at) && $data['is_published']) {
+//            $data['is_published'] = Carbon::now();
+//        }
+
+        $result = $item->update($data);
+
+        if ($result) {
+            return redirect()
+                ->route('blog.admin.post.edit', $item->id)
+                ->with(['success' => 'успешно сохранено']);
+        } else {
+            return back()
+                ->withErrors(['msg' => "Ошибка сохранения!"])
+                ->withInput();
+        }
+
     }
 
     /**

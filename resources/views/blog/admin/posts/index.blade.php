@@ -30,7 +30,7 @@
                                     <td>
                                         <a href="{{ route('blog.admin.post.edit', $post->id) }}">{{ $post->title }}</a>
                                     </td>
-                                    <td>{{ $post->published_at }}</td>
+                                    <td>{{ date('d M H:i', strtotime($post->published_at)) }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
