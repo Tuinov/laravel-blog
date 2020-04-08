@@ -40,9 +40,8 @@ Route::group($groupDate ,function() {
 
 Route::group($groupDate ,function() {
     // BlogCategory
-    $methods = ['index', 'edit', 'update', 'create', 'store'];
     Route::resource('post', 'PostController')
-        ->only($methods)
+        ->except('show')
         ->names('blog.admin.post');
 });
 

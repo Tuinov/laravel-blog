@@ -56,15 +56,11 @@ class CategoryController extends BaseController
      */
     public function store(BlogCategoryCreateRequest $request)
     {
-        dd($request->input());
+        //dd($request->input());
         $data = $request->input();
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
-        //  dd($data);
-
-//        $item = new BlogCategory();
-//        $item->save();
+//        if (empty($data['slug'])) {
+//            $data['slug'] = Str::slug($data['title']);
+//        }
 
         $item = (new BlogCategory())->create($data);
 
@@ -104,20 +100,13 @@ class CategoryController extends BaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param BlogCategoryUpdateRequest $request
      * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(BlogCategoryUpdateRequest $request, $id)
     {
 
-        /* $rules = [
-
-            'title' => 'required',
-            'parent_id' => 'required',
-        ]; */
-
-        // $validatedData = $this->validate($request, $rules);
         $item = $this->blogCategoryRepository->getEdit($id);
 
 
@@ -128,9 +117,9 @@ class CategoryController extends BaseController
         }
 
         $data = $request->all();
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['title']);
-        }
+//        if (empty($data['slug'])) {
+//            $data['slug'] = Str::slug($data['title']);
+//        }
         //dd($data);
         $result = $item->update($data);
 
