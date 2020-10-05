@@ -4,6 +4,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+
+                @include('blog.admin.posts.includes.result_messages')
+
                 <nav class="navbar">
                     <a class="btn btn-primary" href="{{ route('blog.admin.post.create') }}">Добавить</a>
                 </nav>
@@ -30,7 +33,7 @@
                                     <td>
                                         <a href="{{ route('blog.admin.post.edit', $post->id) }}">{{ $post->title }}</a>
                                     </td>
-                                    <td>{{ date('d M H:i', strtotime($post->published_at)) }}</td>
+                                    <td>{{ date('d  M H:i', strtotime($post->published_at)) }}</td>
                                 </tr>
                             @endforeach
                             </tbody>

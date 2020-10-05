@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,9 +40,25 @@ class BlogPost extends Model
 
         ];
 
+    /**
+     * Категория статьи
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         // статья пренадлежит категории
         return $this->belongsTo(BlogCategory::class);
+    }
+
+    /**
+     * Автор статьи
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        // статья пренадлежит юзеру
+        return $this->belongsTo(User::class);
     }
 }

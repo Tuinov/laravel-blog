@@ -62,11 +62,11 @@ class CategoryController extends BaseController
 //            $data['slug'] = Str::slug($data['title']);
 //        }
 
-        $item = (new BlogCategory())->create($data);
+        $item = BlogCategory::create($data);
 
         if ($item) {
             return redirect()->route('blog.admin.categories.edit', [$item->id])
-                             ->with(['success' => 'успешно сохранено']);
+                ->with(['success' => 'успешно сохранено']);
         } else {
             return back()->withErrors(['msg' => 'ошибка сохранения'])
                 ->withInput();
